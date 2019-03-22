@@ -86,30 +86,30 @@ namespace GeneticImageGenerator
             var child = new Dna(Genes.Width, Genes.Height, generateRandomImage: false);
 
             // 3. Iterate the pixels and intercalate origin
-            // int totalPixelsTraversed = 0;
+            int midpoint = (Genes.Width * Genes.Height) / 2;
             for (int i = 0; i < Genes.Width; i++)
             {
                 for (int j = 0; j < Genes.Height; j++)
                 {
-                    //totalPixelsTraversed++;
-                    //if (totalPixelsTraversed < (Genes.Width * Genes.Height) / 2)
-                    //{
-                    //    child.Genes.SetPixel(i, j, Genes.GetPixel(i, j));
-                    //}
-                    //else
-                    //{
-                    //    child.Genes.SetPixel(i, j, partner.Genes.GetPixel(i, j));
-                    //}
-                    if (j % 2 == 0)
+                    var currentPixel = (i * Genes.Width) + (j + 1);
+                    if (currentPixel < midpoint)
                     {
-                        // Genetic information comes from current image
-                        child.Genes.SetPixel(i, j, Genes.GetPixel(i, j));
+                       child.Genes.SetPixel(i, j, Genes.GetPixel(i, j));
                     }
                     else
                     {
-                        // Genetic information comes from partner image
-                        child.Genes.SetPixel(i, j, partner.Genes.GetPixel(i, j));
+                       child.Genes.SetPixel(i, j, partner.Genes.GetPixel(i, j));
                     }
+                    // if (j % 2 == 0)
+                    // {
+                    //     // Genetic information comes from current image
+                    //     child.Genes.SetPixel(i, j, Genes.GetPixel(i, j));
+                    // }
+                    // else
+                    // {
+                    //     // Genetic information comes from partner image
+                    //     child.Genes.SetPixel(i, j, partner.Genes.GetPixel(i, j));
+                    // }
                 }
             }
 
@@ -132,6 +132,13 @@ namespace GeneticImageGenerator
                     /*Color.FromKnownColor((KnownColor)randomNumberGenerator.Next(0, 168))*/
                     Color.Black);
             }
+        }
+
+        public override string ToString()
+        {
+            return("Genetic Information\n" +
+                $"\t- Gene Count: {Genes.Width * Genes.Height}\n" +
+                $"\t- Fitness: {(Fitness * 100)}%");
         }
     }
 }

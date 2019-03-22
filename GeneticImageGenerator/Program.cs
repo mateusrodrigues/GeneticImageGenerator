@@ -26,6 +26,9 @@ namespace GeneticImageGenerator
             // Read from goal file
             var path = Path.Combine("Images", "slow.bmp");
             Goal = (Bitmap)Image.FromFile(path);
+            // Create the results directory
+            if (!Directory.Exists("Results"))
+                Directory.CreateDirectory("Results");
 
             // --- STEP 1: Initialize Population ---
             // Initialize the population with random elements
@@ -41,22 +44,21 @@ namespace GeneticImageGenerator
 
                 // --- STEP 2: Selection ---
                 // 2a. Calculate the fitness for each element in population
-                double bestFitnessInGeneration = 0.0;
-                Bitmap bestImageInGeneration = default(Bitmap);
+                Dna bestFit = default(Dna);
                 for (int i = 0; i < POPULATION_SIZE; i++)
                 {
                     Population[i].CalculateFitness(Goal);
-                    if (Population[i].Fitness > bestFitnessInGeneration)
+                    if (Population[i].Fitness > bestFit?.Fitness || bestFit == null)
                     {
-                        bestFitnessInGeneration = Population[i].Fitness;
-                        bestImageInGeneration = Population[i].Genes;
+                        bestFit = Population[i];
+                        Console.WriteLine("Best fit changed to index " + i);
                     }
                 }
-                Console.WriteLine($"\tBest Fitness: {bestFitnessInGeneration}");
-                if (bestFitnessInGeneration > 0.3)
+                Console.WriteLine(bestFit);
+                if (bestFit?.Fitness > 0.3)
                 {
                     var bestImagePath = Path.Combine("Results", $"Generation-{generation}.bmp");
-                    bestImageInGeneration.Save(bestImagePath);
+                    bestFit.Genes?.Save(bestImagePath);
                 }
 
                 // 2b. Build mating pool
